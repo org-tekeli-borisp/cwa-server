@@ -20,9 +20,11 @@
 
 package app.coronawarn.server.common.persistence.repository;
 
+import app.coronawarn.server.common.persistence.domain.DiagnosisKey;
 import app.coronawarn.server.common.persistence.domain.FederationBatchInfo;
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -53,4 +55,11 @@ public interface FederationBatchInfoRepository extends PagingAndSortingRepositor
       @Param("status") String status);
 
   List<FederationBatchInfo> findByStatus(@Param("status") String status);
+
+  @Query("SELECT COUNT(*) FROM federation_batch_info WHERE date<:threshold")
+  int countOlderThan(@Param("threshold") LocalDate date);
+
+  @Modifying
+  @Query("DELETE FROM federation_batch_info WHERE date<:threshold")
+  void deleteOlderThan(@Param("threshold") LocalDate date);
 }
