@@ -112,18 +112,16 @@ class FederationBatchInfoServiceTest {
     assertThat(actualKeys.get(0)).isEqualTo(federationBatchInfo1);
   }
 
-  @ValueSource(ints = {0, 1, Integer.MAX_VALUE})
+  @ValueSource(ints = {0, 28})
   @ParameterizedTest
   void testApplyRetentionPolicyForValidNumberOfDays(int daysToRetain) {
     assertThatCode(() -> federationBatchInfoService.applyRetentionPolicy(daysToRetain))
         .doesNotThrowAnyException();
   }
 
-  @DisplayName("Assert a negative retention period is rejected.")
-  @ValueSource(ints = {Integer.MIN_VALUE, -1})
-  @ParameterizedTest
-  void testApplyRetentionPolicyForNegativeNumberOfDays(int daysToRetain) {
-    assertThat(catchThrowable(() -> federationBatchInfoService.applyRetentionPolicy(daysToRetain)))
+  @Test
+  void testApplyRetentionPolicyForNegativeNumberOfDays() {
+    assertThat(catchThrowable(() -> federationBatchInfoService.applyRetentionPolicy(-1)))
         .isInstanceOf(IllegalArgumentException.class);
   }
 
@@ -153,5 +151,4 @@ class FederationBatchInfoServiceTest {
 
     assertThat(actualBatchInfos).isEmpty();
   }
-
 }
